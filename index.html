@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conferência de Cotações — EEL USP</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>
+:root{
+  --usp:#0b4f7a; --usp2:#123b57; --bg:#f4f7fa; --card:#fff; --line:#d9e2ea;
+  --ok:#176b3a; --okbg:#e9f7ef; --bad:#9d2b2b; --badbg:#fdeeee;
+  --warn:#8a5a00; --warnbg:#fff6dc; --text:#1d2a33; --muted:#667884;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,var(--usp2),var(--usp));color:white;padding:22px 28px}
+header h1{margin:0;font-size:24px} header p{margin:6px 0 0;opacity:.88}
+main{max-width:1180px;margin:24px auto;padding:0 18px 50px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(16,45,65,.04)}
+h2{font-size:18px;margin:0 0 14px;color:var(--usp2)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.03em}
+input,textarea,select{width:100%;border:1px solid #bccbd6;border-radius:8px;padding:10px 11px;font-size:14px;background:#fff}
+textarea{min-height:140px;resize:vertical}
+.drop{border:2px dashed #9bb5c6;border-radius:12px;padding:28px;text-align:center;background:#f8fbfd}
+.drop.drag{background:#edf7fc;border-color:#3d87ad}
+button{border:0;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer}
+.primary{background:var(--usp);color:#fff}.secondary{background:#e8eef3;color:#274454}.danger{background:#f8dddd;color:#8c2525}
+button:disabled{opacity:.45;cursor:not-allowed}
+.small{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.progress{height:8px;background:#e4ebf0;border-radius:999px;overflow:hidden;margin-top:12px;display:none}
+.progress span{display:block;height:100%;width:0;background:var(--usp)}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.metric{border-radius:12px;padding:15px;border:1px solid var(--line)}
+.metric b{font-size:26px;display:block;margin-top:4px}
+.check{border:1px solid var(--line);border-radius:10px;padding:14px;margin:10px 0}
+.checkhead{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.check h3{font-size:15px;margin:0}
+.badge{font-size:12px;font-weight:700;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.ok{color:var(--ok);background:var(--okbg)} .bad{color:var(--bad);background:var(--badbg)} .warn{color:var(--warn);background:var(--warnbg)}
+.evidence{font-size:13px;background:#f7f9fb;border-left:3px solid #afc3d0;padding:10px;margin-top:10px;white-space:pre-wrap}
+.manual{margin-top:10px;display:flex;gap:8px;align-items:center}
+.manual select{width:auto;padding:6px 8px;font-size:12px}
+.manual-tag{font-size:11px;font-weight:700;color:#274454;background:#e8eef3;border-radius:999px;padding:3px 7px}
+.hidden{display:none}
+#rawText{min-height:230px;font-family:Consolas,monospace;font-size:12px}
+.notice{background:#eef6fb;border:1px solid #c8e0ee;padding:10px 12px;border-radius:8px;font-size:13px}
+.error{background:#fff0f0;border-color:#f0c4c4;color:#8b2525}
+.chip{display:inline-block;margin:6px 6px 0 0;padding:5px 10px;border-radius:999px;background:#e8eef3;color:#274454;font-size:12px;font-weight:700;border:1px solid #c9d6df}
+.chip.active{background:var(--usp);color:#fff;border-color:var(--usp)}
+.internal-alert{
+  margin-top:12px;padding:14px 16px;border-radius:10px;border:2px solid #d39a00;
+  background:#fff8df;color:#6f4a00;font-size:13px;line-height:1.45
+}
+.internal-alert strong{display:block;font-size:14px;margin-bottom:5px}
+.internal-alert.critical{border-color:#b42318;background:#fff0ee;color:#7a1c14}
+.internal-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;
+  padding:4px 7px;border-radius:999px;background:#6f4a00;color:#fff;margin-bottom:7px}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:20px}
+@media(max-width:760px){.grid,.summary{grid-template-columns:1fr}.checkhead{align-items:flex-start}}
+.source-choice:hover{border-color:#7aa7c2!important;background:#f7fbfd!important}
+@media(max-width:760px){#sourceScreen>div{grid-template-columns:1fr!important}}
+@media print{
+  header,.drop,.toolbar,.progress,#rawCard,.no-print{display:none!important}
+  body{background:#fff}.card{box-shadow:none;break-inside:avoid}main{max-width:none;margin:0}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Conferência de Cotações — EEL USP</h1>
+  <p>Triagem documental de propostas comerciais recebidas pela Escola de Engenharia de Lorena.</p>
+</header>
+<main>
+  <section class="card" id="sourceScreen">
+    <h2>1. Escolha a fonte consultada</h2>
+    <p class="small">Selecione uma opção para iniciar a conferência. Os campos seguintes serão exibidos de acordo com a fonte escolhida.</p>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px">
+      <button type="button" class="source-choice" id="chooseCompany" style="text-align:left;padding:18px;border:1px solid var(--line);background:#fff;color:var(--text)">
+        <strong style="display:block;font-size:16px;margin-bottom:6px">Proposta enviada por empresa</strong>
+        <span class="small">Conferência documental da cotação/proposta comercial recebida do fornecedor.</span>
+      </button>
+      <button type="button" class="source-choice" id="chooseInternet" style="text-align:left;padding:18px;border:1px solid var(--line);background:#fff;color:var(--text)">
+        <strong style="display:block;font-size:16px;margin-bottom:6px">Pesquisa de preço na internet</strong>
+        <span class="small">Conferência da pesquisa realizada em sítio eletrônico, conforme Decreto nº 67.888/2023.</span>
+      </button>
+    </div>
+  </section>
+
+  <div id="companyFlow" class="hidden">
+  <section class="card">
+    <div class="toolbar" style="margin-top:0;margin-bottom:12px"><button type="button" class="secondary" id="backFromCompany">← Voltar à escolha da fonte</button></div>
+    <h2>2. Carregar cotação da empresa</h2>
+    <div id="drop" class="drop">
+      <strong>Arraste o PDF aqui</strong><br>
+      <span class="small">ou selecione o arquivo da cotação</span><br><br>
+      <input id="file" type="file" accept="application/pdf,.pdf" style="max-width:360px">
+    </div>
+    <div class="progress" id="progress"><span></span></div>
+    <div id="status" class="small" style="margin-top:10px"></div>
+    <div class="toolbar">
+      <button class="primary" id="analyze" disabled>Analisar cotação</button>
+      <button class="secondary" id="reanalyze" disabled>Reanalisar texto</button>
+      <button class="secondary" id="clear">Limpar</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3. Dados da análise</h2>
+    <div class="grid">
+      <div><label>Nº da cotação</label><input id="quoteNo" placeholder="Detectado automaticamente"></div>
+      <div><label>Valor total da proposta (R$)</label><input id="totalValue" inputmode="decimal" placeholder="0,00"></div>
+      <div><label>UFESP vigente (R$)</label><input id="ufesp" value="38,42" inputmode="decimal"></div>
+      <div><label>Data da proposta</label><input id="proposalDate" type="date"></div>
+      <div><label>Prazo de entrega (dias corridos)</label><input id="deliveryDays" inputmode="numeric" placeholder="Ex.: 15 (0 = imediata)"></div>
+      <div><label>Prazo de pagamento (dias corridos)</label><input id="paymentDays" inputmode="numeric" placeholder="Mínimo: 28 (0 = à vista)"></div>
+      <div><label>Validade da proposta (dias)</label><input id="validityDays" inputmode="numeric" placeholder="Ex.: 30"></div>
+      <div><label>Validade final</label><input id="validUntil" type="date"></div>
+    </div>
+    <div id="totalHint" class="small hidden" style="margin-top:12px"></div>
+    <p class="small">Em 2026, 100 UFESPs correspondem a R$ 3.842,00. O prazo mínimo de pagamento adotado é de 28 dias corridos. A validade final pode ser calculada pela data da proposta + dias de validade ou lida diretamente do PDF.</p>
+  </section>
+
+  <section class="card hidden" id="summaryCard">
+    <h2>4. Resultado geral</h2>
+    <div class="summary">
+      <div class="metric"><span class="small">ATENDE</span><b id="nOk">0</b></div>
+      <div class="metric"><span class="small">PENDÊNCIA</span><b id="nBad">0</b></div>
+      <div class="metric"><span class="small">REVISAR</span><b id="nWarn">0</b></div>
+    </div>
+    <div id="overall" class="notice" style="margin-top:14px"></div>
+    <div id="internalPaymentAlert" class="internal-alert hidden"></div>
+  </section>
+
+  <section class="card hidden" id="checksCard">
+    <h2>5. Checklist documental</h2>
+    <div id="checks"></div>
+  </section>
+
+  <section class="card hidden" id="messageCard">
+    <h2>6. Texto para envio à empresa</h2>
+    <textarea id="message"></textarea>
+    <div class="toolbar">
+      <button class="primary" id="copyMessage">Copiar mensagem</button>
+      <button class="secondary" onclick="window.print()">Imprimir / salvar relatório em PDF</button>
+    </div>
+  </section>
+
+  <section class="card hidden" id="rawCard">
+    <h2>Texto extraído do PDF</h2>
+    <div class="notice">Use esta área para conferir a leitura. Se o PDF for escaneado, o sistema tentará OCR automaticamente. Você pode corrigir o texto e clicar em "Reanalisar texto".</div>
+    <textarea id="rawText"></textarea>
+  </section>
+
+  </div>
+
+  <div id="internetFlow" class="hidden">
+    <section class="card">
+      <div class="toolbar" style="margin-top:0;margin-bottom:12px">
+        <button type="button" class="secondary" id="backFromInternet">← Voltar à escolha da fonte</button>
+      </div>
+      <h2>2. Carregar PDF da pesquisa na internet</h2>
+      <div class="notice">
+        <strong>Pesquisa em sítio eletrônico — Decreto nº 67.888/2023.</strong><br>
+        Salve ou imprima a página consultada em PDF e carregue o arquivo abaixo. O sistema tentará identificar automaticamente as informações exigidas.
+      </div>
+      <div id="webDrop" class="drop" style="margin-top:14px">
+        <strong>Arraste o PDF da página pesquisada aqui</strong><br>
+        <span class="small">ou selecione o arquivo salvo pelo navegador</span><br><br>
+        <input id="webFile" type="file" accept="application/pdf,.pdf" style="max-width:360px">
+      </div>
+      <div class="progress" id="webProgress"><span></span></div>
+      <div id="webStatus" class="small" style="margin-top:10px"></div>
+      <div class="toolbar">
+        <button class="primary" id="webReadPdf" disabled>Ler e conferir PDF</button>
+        <button class="secondary" id="webClear">Limpar pesquisa</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="webDetectedCard">
+      <h2>3. Informações identificadas no PDF</h2>
+      <div class="grid">
+        <div><label>Fornecedor / vendedor</label><input id="webSupplier" placeholder="Detectado automaticamente"></div>
+        <div><label>CNPJ</label><input id="webCnpj" placeholder="Detectado automaticamente"></div>
+        <div><label>Site / domínio</label><input id="webSite" placeholder="Detectado automaticamente"></div>
+        <div><label>Endereço eletrônico (URL)</label><input id="webUrl" placeholder="Detectado automaticamente"></div>
+        <div><label>Data do acesso</label><input id="webDate" type="date"></div>
+        <div><label>Hora do acesso</label><input id="webTime" type="time"></div>
+        <div><label>Preço pesquisado (R$)</label><input id="webPrice" inputmode="decimal" placeholder="0,00"></div>
+        <div><label>Quantidade</label><input id="webQty" inputmode="numeric" placeholder="1"></div>
+      </div>
+      <div id="webCnpjHint" class="small" style="margin-top:8px"></div>
+      <div style="margin-top:14px">
+        <label>Especificação do item</label>
+        <textarea id="webSpec" placeholder="Descrição identificada no PDF"></textarea>
+      </div>
+      <div style="margin-top:14px">
+        <label>Trecho sobre disponibilidade / estoque</label>
+        <textarea id="webAvailabilityEvidence" placeholder="Trecho identificado no PDF"></textarea>
+      </div>
+    </section>
+
+    <section class="card hidden" id="webConfirmCard">
+      <h2>4. Confirmações do comprador</h2>
+
+      <div class="check">
+        <div class="checkhead"><h3>Fornecedor legalmente estabelecido</h3><span class="badge warn">CONFIRMAR</span></div>
+        <p class="small">O sistema pode localizar razão social e CNPJ, mas a decisão de que o potencial licitante está legalmente estabelecido deve ser confirmada pelo comprador.</p>
+        <div class="manual"><input id="webLegal" type="checkbox" style="width:auto"><label for="webLegal" style="margin:0;text-transform:none;color:var(--text)">Confirmo que o fornecedor/vendedor identificado está legalmente estabelecido.</label></div>
+      </div>
+
+      <div class="check">
+        <div class="checkhead"><h3>Item disponível para venda</h3><span class="badge warn">CONFIRMAR</span></div>
+        <p class="small">Confira no PDF se o item estava disponível no momento do acesso. Indicações como “Comprar”, “em estoque” ou quantidade disponível ajudam nessa confirmação.</p>
+        <div class="manual"><input id="webAvailable" type="checkbox" style="width:auto"><label for="webAvailable" style="margin:0;text-transform:none;color:var(--text)">Confirmo que o item estava disponível para venda/contratação no momento da consulta.</label></div>
+      </div>
+
+      <div class="check">
+        <div class="checkhead"><h3>Compatibilidade da especificação</h3><span class="badge warn">CONFIRMAR</span></div>
+        <p class="small">A ferramenta extrai a descrição encontrada, mas somente o comprador pode confirmar se ela corresponde exatamente ao item solicitado.</p>
+        <div class="manual"><input id="webCompatible" type="checkbox" style="width:auto"><label for="webCompatible" style="margin:0;text-transform:none;color:var(--text)">Confirmo que o item pesquisado atende às especificações e características solicitadas.</label></div>
+      </div>
+
+      <div class="check">
+        <div class="checkhead"><h3>Sítio de leilão</h3><span class="badge bad">VEDADO</span></div>
+        <p class="small">Cotações provenientes de sítios de leilão não são admitidas.</p>
+        <div class="manual"><input id="webNotAuction" type="checkbox" style="width:auto"><label for="webNotAuction" style="margin:0;text-transform:none;color:var(--text)">Confirmo que a página consultada NÃO é um sítio de leilão.</label></div>
+      </div>
+
+      <div class="check">
+        <div class="checkhead"><h3>Marketplace / intermediação de vendas</h3><span class="badge warn">CONFERIR</span></div>
+        <p class="small">Verifique se o site é apenas a plataforma ou se a própria empresa identificada é quem vende o produto.</p>
+        <label style="margin-top:10px">A oferta é de marketplace/intermediação?</label>
+        <select id="webMarketplace">
+          <option value="">Selecione</option>
+          <option value="no">Não — o vendedor é a própria empresa do site</option>
+          <option value="yes">Sim — existe vendedor terceiro</option>
+        </select>
+        <div id="webSellerHint" class="small" style="margin-top:8px"></div>
+        <div id="marketSellerBox" class="hidden" style="margin-top:12px">
+          <label>Vendedor efetivo exibido na página</label>
+          <input id="webActualSeller" placeholder="Informe quem aparece como 'Vendido por'">
+          <div class="internal-alert" style="margin-top:10px">
+            <span class="internal-tag">ATENÇÃO DO COMPRADOR</span>
+            <strong>Identifique o vendedor efetivo.</strong>
+            O nome da plataforma não substitui a identificação de quem efetivamente comercializa o item. A conferência dos requisitos deve considerar esse vendedor.
+          </div>
+        </div>
+      </div>
+
+      <div class="check">
+        <div class="checkhead"><h3>PDF apto para juntada aos autos</h3><span class="badge warn">CONFIRMAR</span></div>
+        <p class="small">O documento deve permitir comprovar fornecedor, endereço eletrônico, data e hora do acesso, especificação, preço e quantidade.</p>
+        <div class="manual"><input id="webPageSaved" type="checkbox" style="width:auto"><label for="webPageSaved" style="margin:0;text-transform:none;color:var(--text)">Confirmo que o PDF carregado é o documento que será disponibilizado nos autos.</label></div>
+      </div>
+
+      <div class="toolbar">
+        <button class="primary" id="webAnalyze">Gerar resultado da conferência</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="webRawCard">
+      <h2>Texto extraído do PDF da internet</h2>
+      <textarea id="webRawText" style="min-height:220px;font-family:Consolas,monospace;font-size:12px"></textarea>
+    </section>
+
+    <section class="card hidden" id="webResultCard">
+      <h2>5. Resultado da pesquisa na internet</h2>
+      <div id="webResult"></div>
+      <div class="toolbar"><button class="secondary" onclick="window.print()">Imprimir / salvar relatório em PDF</button></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Critérios utilizados</h2>
+    <p class="small">A ferramenta faz uma <strong>triagem automática</strong> por palavras-chave, padrões, datas, valores e dados bancários. Ela não substitui a conferência administrativa. Itens ambíguos são marcados como <strong>Revisar manualmente</strong>.</p>
+    <p class="small">Bases incorporadas nesta versão: Resolução USP nº 8.548/2023 (manifestação de concordância) e Portaria GR USP nº 8.249/2023 (condições de pagamento e conta bancária).</p>
+  </section>
+</main>
+<footer>Ferramenta de apoio à conferência documental — EEL USP</footer>
+
+<script>
+/* ===================== Utilitários e detecção (funções puras) ===================== */
+const deacc=s=>(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const norm=s=>deacc(s).toLowerCase();
+const moneyToNumber=s=>{
+  if(!s) return NaN;
+  let t=String(s).replace(/[^\d,.-]/g,"").trim();
+  if(t.includes(",") && t.includes(".")) t=t.replace(/\./g,"").replace(",",".");
+  else if(t.includes(",")) t=t.replace(",",".");
+  return Number(t);
+};
+const fmtBR=n=>Number.isFinite(n)?n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}):"não identificado";
+const esc=s=>(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+const MESES={janeiro:1,fevereiro:2,marco:3,abril:4,maio:5,junho:6,julho:7,agosto:8,setembro:9,outubro:10,novembro:11,dezembro:12};
+const MESES_RE=Object.keys(MESES).join("|");
+const DATE_ONLY=/^\d{1,2}[\/.\-]\d{1,2}[\/.\-]20\d{2}$/;
+
+function snippet(text, patterns, radius=110){
+  const low=norm(text);
+  for(const p of patterns){
+    const i=low.search(p instanceof RegExp?p:new RegExp(p,"i"));
+    if(i>=0){
+      const a=Math.max(0,i-radius), b=Math.min(text.length,i+radius);
+      return text.slice(a,b).replace(/\s+/g," ").trim();
+    }
+  }
+  return "";
+}
+/* Primeira ocorrência cujo trecho casado não contenha termos de outro assunto */
+function firstGood(t,pats,forbid){
+  for(const p of pats){
+    const re=new RegExp(p.source,p.flags.includes("g")?p.flags:p.flags+"g");
+    for(const m of t.matchAll(re)){
+      if(forbid && forbid.test(m[0])) continue;
+      return m;
+    }
+  }
+  return null;
+}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function startToday(){const d=new Date();d.setHours(0,0,0,0);return d}
+function isoDate(d){if(!d||isNaN(d))return ""; const z=new Date(d.getTime()-d.getTimezoneOffset()*60000); return z.toISOString().slice(0,10)}
+function brDate(d){return d&& !isNaN(d)?d.toLocaleDateString("pt-BR"):""}
+function parseBRDate(s){
+  const m=String(s||"").match(/(\d{1,2})[\/.\-](\d{1,2})[\/.\-](20\d{2})/);
+  if(!m)return null;
+  const d=new Date(Number(m[3]),Number(m[2])-1,Number(m[1]));
+  return (d.getMonth()===Number(m[2])-1)?d:null;
+}
+
+/* CNPJ */
+const CNPJ_RE=/\b\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}\b/g;
+function validCnpj(s){
+  const d=String(s||"").replace(/\D/g,"");
+  if(d.length!==14||/^(\d)\1{13}$/.test(d))return false;
+  const calc=len=>{let sum=0,pos=len-7;for(let i=len;i>=1;i--){sum+=Number(d[len-i])*pos--;if(pos<2)pos=9}const r=sum%11;return r<2?0:11-r};
+  return calc(12)===Number(d[12])&&calc(13)===Number(d[13]);
+}
+function findCnpjs(text){return [...new Set((text.match(CNPJ_RE)||[]))]}
+
+function detectQuoteNo(text){
+  const t=deacc(text);
+  const pats=[
+    /(?:cotacao|orcamento|proposta(?:\s+comercial)?)\s*(?:n[º°o]\.?|n\.\s*º|numero|nr\.?)?\s*[:#-]?\s*([A-Z0-9][A-Z0-9./-]*\d[A-Z0-9./-]*)(?!\s*(?:\(|dias|%))/i,
+    /(?:\bn[º°]|\bn\.\s*º|\bno\.|\bnumero)\s*[:#-]?\s*(\d[\dA-Z./-]{2,})(?!\s*(?:\(|dias|%))/i
+  ];
+  for(const p of pats){
+    for(const m of t.matchAll(new RegExp(p.source,"gi"))){
+      const v=m[1].replace(/[.\-\/]+$/,"");
+      if(DATE_ONLY.test(v)) continue;
+      if(v.replace(/\D/g,"").length===14) continue; // é CNPJ
+      return v;
+    }
+  }
+  return "";
+}
+
+/* Retorna o valor mais provável e a lista de candidatos */
+function detectTotals(text){
+  const t=deacc(text);
+  const re=/(valor\s+total(?:\s+da\s+(?:proposta|cotacao)|\s+geral)?|total\s+geral|total\s+da\s+(?:proposta|cotacao)|preco\s+total|\btotal\b)[^\d]{0,25}?(?:R\$)?\s*([\d.]+,\d{2})/gi;
+  const list=[];
+  for(const m of t.matchAll(re)){
+    const v=moneyToNumber(m[2]);
+    if(!Number.isFinite(v)) continue;
+    const strong=/geral|proposta|cotacao/i.test(m[1]);
+    const ex=list.find(x=>x.value===v);
+    if(ex){ex.strong=ex.strong||strong;continue}
+    list.push({value:v,label:m[1].replace(/\s+/g," ").trim(),strong});
+  }
+  list.sort((a,b)=>b.value-a.value);
+  const strongs=list.filter(x=>x.strong);
+  const best=strongs.length?strongs[0].value:(list.length?list[0].value:NaN);
+  return {best,list};
+}
+
+/* Data da proposta: {date, certain} — certain=false quando apenas inferida */
+function detectProposalDate(text){
+  const t=norm(text);
+  let m=firstGood(t,[/(?:data\s+da\s+(?:proposta|cotacao)|data\s+do\s+orcamento|data\s+de\s+emissao|emissao|emitid[oa]\s+em|proposta\s+em|cotacao\s+em|orcamento\s+em)\D{0,18}(\d{1,2}[\/.\-]\d{1,2}[\/.\-]20\d{2})/]);
+  if(m){const d=parseBRDate(m[1]); if(d) return {date:d,certain:true}}
+  const badBefore=/(valid|ate\s*$|entrega|pagamento|vencimento)/;
+  for(const x of t.matchAll(new RegExp("(\\d{1,2})\\s+de\\s+("+MESES_RE+")\\s+de\\s+(20\\d{2})","g"))){
+    if(badBefore.test(t.slice(Math.max(0,x.index-35),x.index))) continue;
+    return {date:new Date(+x[3],MESES[x[2]]-1,+x[1]),certain:true};
+  }
+  for(const x of t.matchAll(/\b(\d{1,2}[\/.\-]\d{1,2}[\/.\-]20\d{2})\b/g)){
+    if(badBefore.test(t.slice(Math.max(0,x.index-35),x.index))) continue;
+    const d=parseBRDate(x[1]); if(d) return {date:d,certain:false};
+  }
+  return {date:null,certain:false};
+}
+
+/* Prazo de entrega: {days, kind: corridos|uteis|imediata|null} */
+function detectDelivery(text){
+  const t=norm(text);
+  const forbid=/pagamento|validade|garantia/;
+  const m=firstGood(t,[
+    /(?:prazo\s+de\s+entrega|entrega)\D{0,40}?(\d{1,3})(?:\s*\([^)]{1,30}\))?\s*dias(\s+uteis)?/,
+    /(\d{1,3})(?:\s*\([^)]{1,30}\))?\s*dias(\s+uteis)?\D{0,20}(?:para\s+(?:a\s+)?)?entrega/
+  ],forbid);
+  if(m) return {days:Number(m[1]),kind:m[2]?"uteis":"corridos"};
+  if(/(entrega\s*[:\-]?\s*imediata|pronta\s+entrega|prazo\s+de\s+entrega\s*[:\-]?\s*imediat)/.test(t)) return {days:0,kind:"imediata"};
+  return {days:NaN,kind:null};
+}
+
+/* Prazo de pagamento: {days, kind: corridos|uteis|avista|null} */
+function detectPayment(text){
+  const t=norm(text);
+  const forbid=/entrega|validade|garantia/;
+  const m=firstGood(t,[
+    /(?:prazo\s+de\s+pagamento|condic(?:ao|oes)\s+de\s+pagamento|forma\s+de\s+pagamento|pagamento)\D{0,50}?(\d{1,3})(?:\s*\/\s*\d{1,3})*(?:\s*\([^)]{1,30}\))?\s*(?:dias|ddl|d\.d\.l\.?|dd\b)(\s+uteis)?/,
+    /(\d{1,3})(?:\s*\/\s*\d{1,3})*(?:\s*\([^)]{1,30}\))?\s*(?:dias|ddl)(\s+uteis)?\D{0,25}(?:para\s+(?:o\s+)?)?pagamento/,
+    /\b(\d{1,3})\s*ddl\b()/
+  ],forbid);
+  if(m) return {days:Number(m[1]),kind:m[2]?"uteis":"corridos"};
+  if(/(pagamento|condic(?:ao|oes)\s+de\s+pagamento)[^.\n]{0,60}?(a\s+vista|antecipad)|(a\s+vista|antecipad\w*)[^.\n]{0,30}pagamento/.test(t)) return {days:0,kind:"avista"};
+  return {days:NaN,kind:null};
+}
+
+function detectValidity(text){
+  const t=norm(text);
+  const out={days:NaN,until:null};
+  const forbid=/entrega|pagamento|garantia/;
+  let m=firstGood(t,[/(?:validade|valid[ao]\s+ate)\D{0,35}?(\d{1,2}[\/.\-]\d{1,2}[\/.\-]20\d{2})/],forbid);
+  if(m) out.until=parseBRDate(m[1]);
+  if(!out.until){
+    m=firstGood(t,[new RegExp("(?:validade|valid[ao]\\s+ate)\\D{0,35}?(\\d{1,2})\\s+de\\s+("+MESES_RE+")\\s+de\\s+(20\\d{2})")],forbid);
+    if(m) out.until=new Date(+m[3],MESES[m[2]]-1,+m[1]);
+  }
+  m=firstGood(t,[/(?:validade|valid[ao])\D{0,40}?(\d{1,3})(?:\s*\([^)]{1,30}\))?\s*dias/],forbid);
+  if(m) out.days=Number(m[1]);
+  return out;
+}
+
+function detectBank(text){
+  const n=norm(text);
+  const banks=[
+    ["Banco do Brasil",/(banco do brasil|\bbb\b|\bbanco\s*001\b|\bcod(?:igo)?\.?\s*001\b)/],
+    ["Itaú",/(\bitau\b|\bbanco\s*341\b)/],
+    ["Bradesco",/(bradesco|\bbanco\s*237\b)/],
+    ["Santander",/(santander|\bbanco\s*033\b)/],
+    ["Caixa",/(caixa economica|\bbanco\s*104\b|\bcef\b)/],
+    ["Sicredi",/(sicredi|\bbanco\s*748\b)/],
+    ["Sicoob",/(sicoob|\bbanco\s*756\b)/],
+    ["Nubank",/(nubank|nu pagamentos|\bbanco\s*260\b)/],
+    ["Inter",/(banco inter\b|\bbanco\s*077\b)/]
+  ];
+  for(const [name,p] of banks) if(p.test(n)) return name;
+  return "";
+}
+const AGENCY_RE=/\b(agencia|ag\.?)\s*(?:n[º°o]\.?\s*)?[:\-]?\s*\d/;
+const ACCOUNT_RE=/(conta\s+corrente|\bc\/c|\bconta)\s*(?:n[º°o]\.?\s*)?[:\-]?\s*[\d.-]{3,}/;
+
+/* Dados da pesquisa na internet */
+function detectWebData(text){
+  const out={};
+  const t=deacc(text);
+  const urls=[...text.matchAll(/https?:\/\/[^\s)]+/g)].map(m=>m[0].replace(/[.,;]+$/,""));
+  if(urls.length){
+    out.url=urls.find(u=>/\/produt|\/item|\/p\/|\/dp\/|MLB-?\d/i.test(u)) || urls[0];
+    try{ out.site=new URL(out.url).hostname.replace(/^www\./,""); }catch(e){}
+  }
+  const cnpjs=findCnpjs(text);
+  if(cnpjs.length) out.cnpj=cnpjs.find(validCnpj)||cnpjs[0];
+
+  const dt=text.match(/\b(\d{1,2})\/(\d{1,2})\/(20\d{2})[, ]+\s*(\d{1,2}):(\d{2})\b/);
+  if(dt){
+    out.date=`${dt[3]}-${String(dt[2]).padStart(2,"0")}-${String(dt[1]).padStart(2,"0")}`;
+    out.time=`${String(dt[4]).padStart(2,"0")}:${dt[5]}`;
+  }
+
+  const supplierPatterns=[
+    /([A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ][A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ0-9 .&-]{4,})\s*[|–-]\s*\d{11,14}/,
+    /([A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ][A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ0-9 .&-]{3,}?\s(?:LTDA|Ltda|S\/A|S\.A\.|EIRELI|ME|EPP))(?![A-Za-z])/
+  ];
+  for(const p of supplierPatterns){
+    const m=text.match(p); if(m){out.supplier=m[1].trim();break;}
+  }
+  const seller=text.match(/vendido\s+(?:e\s+entregue\s+)?por\s*:?\s*([^\n|]{3,60})/i);
+  if(seller) out.seller=seller[1].replace(/\s+(entregue|enviado)\b.*$/i,"").trim();
+
+  // Título do item: linhas próximas (acima) do primeiro preço
+  const lines=text.split(/\n/).map(x=>x.trim()).filter(Boolean);
+  const block=/(entrar|login|carrinho|categorias|buscar|minha conta|frete|\bcep\b|https?:|cookies|ofertas|atendimento|compartilhar|avalia|parcel|sem juros|cupom|politica|termos)/;
+  const isTitle=l=>l.length>=15&&l.length<=200&&!/R\$/.test(l)&&!block.test(norm(l))&&l.split(/\s+/).length>=3&&/[a-z]/i.test(l);
+  const priceIdx=lines.findIndex(l=>/R\$\s*[\d.]+,\d{2}/.test(l));
+  let cand=priceIdx>0?lines.slice(Math.max(0,priceIdx-10),priceIdx).filter(isTitle):[];
+  if(cand.length) out.spec=cand.sort((a,b)=>b.length-a.length)[0];
+  else{
+    const kw=/(produto|equipamento|modelo|kit|medidor|reagente|material|marca|unidade|caixa|pacote|litro|\bml\b|\bkg\b|\bmm\b|\bcm\b)/;
+    out.spec=lines.slice(0,150).find(l=>isTitle(l)&&kw.test(norm(l)))||"";
+  }
+
+  let pm=t.match(/\bPor\s+R\$\s*([\d.]+,\d{2})/i);
+  if(!pm) pm=t.match(/\b(?:preco|valor)\D{0,15}R\$\s*([\d.]+,\d{2})/i);
+  if(!pm) pm=t.match(/\bR\$\s*([\d.]+,\d{2})/);
+  if(pm) out.price=pm[1];
+
+  const qty=t.match(/(?:restam apenas|estoque|disponive[il]s?)[^\n]{0,60}?(\d{1,5})\s*(?:unidades|un\.?|unds?)/i);
+  if(qty) out.qty=qty[1];
+
+  const avail=snippet(text,[/restam apenas/i,/em estoque/i,/disponivel/i,/comprar/i],100);
+  if(avail) out.availability=avail;
+
+  return out;
+}
+/* ===================== Fim das funções puras ===================== */
+
+let pdfjsLib=null;
+let currentFile=null;
+let results=[];
+let manualOverrides={};      // ajustes manuais preservados entre reanálises
+let validUntilManual=false;  // validade final digitada pelo usuário
+let paymentInfo=null;        // {days, kind, corridos}
+const $=id=>document.getElementById(id);
+
+function numField(id){
+  const v=$(id).value.trim();
+  if(v==="") return NaN;
+  const n=Number(v.replace(",","."));
+  return Number.isFinite(n)&&n>=0?n:NaN;
+}
+
+async function ensurePdfJs(){
+  if(pdfjsLib) return pdfjsLib;
+  try{
+    pdfjsLib = await import("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
+    return pdfjsLib;
+  }catch(e){
+    console.error("Falha ao carregar PDF.js", e);
+    throw new Error("Não foi possível carregar o leitor de PDF. Verifique sua conexão com a internet e tente novamente.");
+  }
+}
+
+async function extractPdf(file, progress=setProgress){
+  const lib=await ensurePdfJs();
+  const ab=await file.arrayBuffer();
+  const pdf=await lib.getDocument({data:ab}).promise;
+  let full="", ocrPages=[];
+  for(let i=1;i<=pdf.numPages;i++){
+    progress((i-1)/pdf.numPages*65,`Lendo página ${i} de ${pdf.numPages}...`);
+    const page=await pdf.getPage(i);
+    const tc=await page.getTextContent();
+    // preserva as quebras de linha do PDF (necessário para localizar títulos e rótulos)
+    const pageText=tc.items.map(x=>(x.str||"")+(x.hasEOL?"\n":" ")).join("")
+      .split("\n").map(l=>l.replace(/[ \t]+/g," ").trim()).filter(Boolean).join("\n");
+    if(pageText.length<45) ocrPages.push({page,i});
+    full += `\n\n--- Página ${i} ---\n${pageText}`;
+  }
+  if(ocrPages.length && typeof window.Tesseract!=="undefined"){
+    for(let k=0;k<ocrPages.length;k++){
+      const {page,i}=ocrPages[k];
+      progress(65+(k/ocrPages.length)*30,`OCR da página ${i}...`);
+      const viewport=page.getViewport({scale:1.7});
+      const canvas=document.createElement("canvas");
+      canvas.width=viewport.width; canvas.height=viewport.height;
+      await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
+      try{
+        const r=await Tesseract.recognize(canvas,"por",{logger:()=>{}});
+        full += `\n\n--- OCR Página ${i} ---\n${r.data.text}`;
+      }catch(e){
+        console.warn("OCR não concluído", e);
+        full += `\n\n[OCR não concluído na página ${i}]`;
+      }
+    }
+  }
+  progress(100,"Leitura concluída.");
+  return full.trim();
+}
+
+function result(id,title,status,evidence,issue,detail=""){
+  return {id,title,status,evidence,issue,detail,manual:manualOverrides[id]||null};
+}
+
+function renderTotalHint(list){
+  const box=$("totalHint");
+  if(!list || list.length<2){box.classList.add("hidden");box.innerHTML="";return}
+  const cur=moneyToNumber($("totalValue").value);
+  box.classList.remove("hidden");
+  box.innerHTML=`Valores com rótulo "total" encontrados no PDF — clique para usar outro:<br>`+
+    list.slice(0,8).map(x=>`<button type="button" class="chip${x.value===cur?" active":""}" data-total="${x.value}" title="${esc(x.label)}">${fmtBR(x.value)}</button>`).join("");
+  box.querySelectorAll("[data-total]").forEach(b=>b.onclick=()=>{
+    $("totalValue").value=Number(b.dataset.total).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+    analyzeText(true);
+  });
+}
+
+function analyzeText(silent=false){
+  const text=$("rawText").value||"";
+  const n=norm(text);
+  if(!text.trim()){ if(!silent) alert("Não há texto para analisar."); return; }
+
+  if(!$("quoteNo").value) $("quoteNo").value=detectQuoteNo(text);
+  const totals=detectTotals(text);
+  if(!$("totalValue").value && Number.isFinite(totals.best))
+    $("totalValue").value=totals.best.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  const total=moneyToNumber($("totalValue").value);
+  const ufesp=moneyToNumber($("ufesp").value)||38.42;
+  const limit=ufesp*100;
+  renderTotalHint(totals.list);
+
+  results=[];
+
+  // Empresa e responsável
+  const cnpjs=findCnpjs(text);
+  const validOnes=cnpjs.filter(validCnpj);
+  const hasCompany=/(razao social|empresa|cnpj|nome empresarial)/i.test(n);
+  const hasResponsible=/(responsavel|vendedor|consultor|representante|contato|atenciosamente|executivo|comercial)/i.test(n);
+  let st, compDetail, compIssue="incluir a identificação da empresa (razão social e CNPJ) e do responsável pela proposta";
+  if(validOnes.length){
+    st=hasResponsible?"ok":"warn";
+    compDetail=`CNPJ válido detectado: ${validOnes.join(", ")}.`+(hasResponsible?" Há indício de responsável/contato.":" Responsável não identificado com segurança.");
+    if(validOnes.length>1) compDetail+=" Mais de um CNPJ encontrado — confira qual é o da empresa proponente.";
+  }else if(cnpjs.length){
+    st="warn";
+    compDetail=`CNPJ encontrado (${cnpjs.join(", ")}), mas com dígito verificador inválido — possível erro de leitura (OCR) ou de digitação. Confira no PDF.`;
+    compIssue="conferir e corrigir o CNPJ informado na proposta";
+  }else{
+    st=hasCompany?"warn":"bad";
+    compDetail="CNPJ não identificado.";
+  }
+  results.push(result("company","Identificação da empresa e responsável",st,
+    snippet(text,[/cnpj/i,/razao social/i,/responsavel/i,/vendedor/i,/contato/i]),compIssue,compDetail));
+
+  // Dados bancários
+  const bank=detectBank(text);
+  const hasAgency=AGENCY_RE.test(n);
+  const hasAccount=ACCOUNT_RE.test(n);
+  const bankComplete=!!bank && hasAccount;
+  let bankStatus=bankComplete?"ok":(bank||hasAgency||hasAccount)?"warn":"bad";
+  let bankDetail=bank?`Banco identificado: ${bank}.`:"Banco não identificado.";
+  if(bank && !hasAgency) bankDetail+=" Agência não localizada.";
+  if(bank && !hasAccount) bankDetail+=" Conta não localizada.";
+  if(bankComplete && bank!=="Banco do Brasil"){
+    if(Number.isFinite(total)){
+      if(total>limit){
+        const hasJust=/(justificativa|justifica-se|inviabilidade|excecao|excepcional)/i.test(n);
+        bankStatus=hasJust?"warn":"bad";
+        bankDetail+=` Valor ${fmtBR(total)} acima de 100 UFESPs (${fmtBR(limit)}). ${hasJust?"Há indício de justificativa; conferir documento.":"Não foi localizada justificativa para a exceção."}`;
+      } else {
+        bankDetail+=` Valor ${fmtBR(total)} não supera 100 UFESPs (${fmtBR(limit)}); conferir enquadramento do credor na exceção aplicável.`;
+        bankStatus="warn";
+      }
+    } else {
+      bankStatus="warn";
+      bankDetail+=" Informe/confira o valor total para aplicar a regra das 100 UFESPs.";
+    }
+  }
+  results.push(result("bank","Indicação da conta bancária",bankStatus,
+    snippet(text,[/banco do brasil/i,/agencia/i,/conta corrente/i,/dados bancarios/i]),
+    bankStatus==="bad" && bank && bank!=="Banco do Brasil" && Number.isFinite(total) && total>limit
+      ?"apresentar conta do Banco do Brasil ou, sendo inviável e cabível, a justificativa documental da exceção"
+      :"informar os dados bancários da empresa (banco, agência e conta)",
+    bankDetail
+  ));
+
+  // Itens
+  const hasItemWords=/(descricao|item|produto|servico|quantidade|qtd|valor unitario|preco unitario)/i.test(n);
+  const moneyCount=(text.match(/R\$\s*[\d.]+,\d{2}/g)||[]).length;
+  const itemStatus=hasItemWords && moneyCount>=1?"ok":hasItemWords?"warn":"bad";
+  results.push(result("items","Descrição dos itens",itemStatus,
+    snippet(text,[/descricao/i,/item/i,/produto/i,/servico/i,/quantidade/i]),
+    "incluir a descrição clara dos itens/serviços cotados",
+    itemStatus==="ok"?"Estrutura de itens e valores localizada.":"A descrição dos itens não foi identificada com segurança."
+  ));
+
+  // Prazo de entrega
+  const delDet=detectDelivery(text);
+  let delDays=numField("deliveryDays");
+  if(!Number.isFinite(delDays)&&Number.isFinite(delDet.days)){delDays=delDet.days;$("deliveryDays").value=delDays}
+  let delKind=(Number.isFinite(delDays)&&delDays===delDet.days)?delDet.kind:"corridos";
+  if(delDays===0) delKind="imediata";
+  let delStatus="bad", delDetail="Prazo de entrega não localizado.", delIssue="informar expressamente o prazo de entrega em dias corridos";
+  if(Number.isFinite(delDays)){
+    if(delKind==="imediata"){delStatus="ok";delDetail="Entrega imediata / pronta entrega."}
+    else if(delKind==="uteis"){delStatus="warn";delDetail=`Prazo informado em dias úteis: ${delDays} dias úteis (aprox. ${Math.ceil(delDays*7/5)} dias corridos). Confirmar a conversão para dias corridos.`;delIssue="informar o prazo de entrega em dias corridos"}
+    else{delStatus="ok";delDetail=`Prazo de entrega identificado: ${delDays} dias corridos.`}
+  }
+  results.push(result("delivery","Prazo de entrega",delStatus,
+    snippet(text,[/prazo de entrega/i,/pronta entrega/i,/entrega/i],150),delIssue,delDetail));
+
+  // Prazo de pagamento
+  const payDet=detectPayment(text);
+  let payDays=numField("paymentDays");
+  if(!Number.isFinite(payDays)&&Number.isFinite(payDet.days)){payDays=payDet.days;$("paymentDays").value=payDays}
+  let payKind=(Number.isFinite(payDays)&&payDays===payDet.days)?payDet.kind:"corridos";
+  if(payDays===0) payKind="avista";
+  paymentInfo=null;
+  let payStatus="bad", payDetail="Prazo de pagamento não localizado.";
+  let payIssue="informar expressamente o prazo de pagamento, em dias corridos, observando o mínimo de 28 dias";
+  if(Number.isFinite(payDays)){
+    const corridos=payKind==="uteis"?Math.ceil(payDays*7/5):payDays;
+    paymentInfo={days:payDays,kind:payKind,corridos};
+    const desc=payKind==="avista"?"pagamento à vista/antecipado":payKind==="uteis"?`${payDays} dias úteis (aprox. ${corridos} dias corridos)`:`${payDays} dias corridos`;
+    if(corridos<28){
+      payStatus="bad";
+      payDetail=`Prazo identificado: ${desc}. Inferior ao mínimo de 28 dias corridos.`;
+      payIssue=`adequar o prazo de pagamento, atualmente indicado como ${desc}`;
+    }else if(payKind==="uteis"){
+      payStatus="warn";
+      payDetail=`Prazo identificado: ${desc}. Confirmar a contagem em dias corridos.`;
+      payIssue="informar o prazo de pagamento em dias corridos";
+    }else{
+      payStatus="ok";
+      payDetail=`Prazo de pagamento identificado: ${desc}.`;
+    }
+  }
+  results.push(result("payment","Prazo de pagamento",payStatus,
+    snippet(text,[/prazo de pagamento/i,/condic(ao|oes) de pagamento/i,/pagamento/i],150),payIssue,payDetail));
+
+  // Resolução 8548
+  const has8548=/(8548|8\.548)/.test(n);
+  const hasAgree=/(concord|de acordo|aceit|ciente|anuen|sujeit)/i.test(n);
+  const resStatus=has8548&&hasAgree?"ok":has8548?"warn":"bad";
+  results.push(result("resolution","Concordância com a Resolução USP nº 8.548/2023",resStatus,
+    snippet(text,[/8548/i,/8\.548/i,/resolucao usp/i],150),
+    "incluir manifestação expressa de concordância com a Resolução USP nº 8.548/2023",
+    resStatus==="ok"?"Número da Resolução e linguagem de concordância/aceite localizados.":has8548?"A Resolução foi mencionada, mas a manifestação de concordância não ficou inequívoca.":"Não foi localizada referência à Resolução USP nº 8.548/2023."
+  ));
+
+  // Validade
+  const pdDet=detectProposalDate(text);
+  let proposalDate=$("proposalDate").value?new Date($("proposalDate").value+"T00:00:00"):pdDet.date;
+  const dateInferred=!!(proposalDate && pdDet.date && !pdDet.certain && isoDate(proposalDate)===isoDate(pdDet.date));
+  const valDet=detectValidity(text);
+  let validityDays=numField("validityDays");
+  if(!(validityDays>0) && Number.isFinite(valDet.days)) validityDays=valDet.days;
+
+  let validUntil=null, untilSource="";
+  if(validUntilManual && $("validUntil").value){validUntil=new Date($("validUntil").value+"T00:00:00");untilSource="manual"}
+  else if(valDet.until){validUntil=valDet.until;untilSource="pdf"}
+  else if(proposalDate && validityDays>0){validUntil=addDays(proposalDate,validityDays);untilSource="calc"}
+
+  $("validUntil").value=validUntil?isoDate(validUntil):"";
+  if(proposalDate)$("proposalDate").value=isoDate(proposalDate);
+  if(validityDays>0)$("validityDays").value=validityDays;
+
+  let valStatus="bad", valDetail="Validade não localizada.";
+  if(validUntil){
+    valStatus=validUntil>=startToday()?"ok":"bad";
+    valDetail=`Data da proposta: ${proposalDate?brDate(proposalDate):"não identificada"}${dateInferred?" (inferida — sem rótulo no PDF)":""}. `;
+    if(validityDays>0) valDetail+=`Validade informada: ${validityDays} dias. `;
+    valDetail+=`Prazo final da proposta: ${brDate(validUntil)} — ${valStatus==="ok"?"vigente":"vencida"}.`;
+    if(untilSource==="calc" && dateInferred && valStatus==="ok"){
+      valStatus="warn";
+      valDetail+=" Como a data da proposta foi inferida, confirme-a antes de considerar a validade.";
+    }
+  }else if(validityDays>0){
+    valStatus="warn";
+    valDetail=`Validade de ${validityDays} dias localizada, mas não foi possível determinar com segurança a data inicial da proposta para calcular o prazo final.`;
+  }
+  results.push(result("validity","Validade da proposta",valStatus,
+    snippet(text,[/validade/i,/valida ate/i,/proposta valida/i],170),
+    valStatus==="bad"?"informar uma validade vigente para a proposta":"confirmar a data da proposta e o prazo final de validade",
+    valDetail));
+
+  renderResults();
+}
+
+function effective(r){return r.manual||r.status}
+function renderResults(){
+  $("summaryCard").classList.remove("hidden");
+  $("checksCard").classList.remove("hidden");
+  $("messageCard").classList.remove("hidden");
+  $("rawCard").classList.remove("hidden");
+
+  $("checks").innerHTML=results.map(r=>{
+    const s=effective(r), label=s==="ok"?"ATENDE":s==="bad"?"PENDÊNCIA":"REVISAR";
+    return `<div class="check">
+      <div class="checkhead"><h3>${esc(r.title)}</h3><span class="badge ${s}">${label}</span></div>
+      <div class="small" style="margin-top:7px">${esc(r.detail)}</div>
+      ${r.evidence?`<div class="evidence"><strong>Evidência localizada:</strong> ${esc(r.evidence)}</div>`:`<div class="evidence">Nenhuma evidência textual suficiente foi localizada.</div>`}
+      <div class="manual no-print"><span class="small">Ajuste manual:</span>
+        <select data-id="${r.id}">
+          <option value="">Automático</option><option value="ok" ${r.manual==="ok"?"selected":""}>Atende</option>
+          <option value="warn" ${r.manual==="warn"?"selected":""}>Revisar</option><option value="bad" ${r.manual==="bad"?"selected":""}>Pendência</option>
+        </select>
+        ${r.manual?`<span class="manual-tag">ajustado manualmente</span>`:""}
+      </div>
+    </div>`
+  }).join("");
+
+  document.querySelectorAll("[data-id]").forEach(sel=>sel.onchange=e=>{
+    const id=e.target.dataset.id, v=e.target.value||null;
+    if(v) manualOverrides[id]=v; else delete manualOverrides[id];
+    const r=results.find(x=>x.id===id); r.manual=v; renderResults();
+  });
+
+  const counts={ok:0,bad:0,warn:0};
+  results.forEach(r=>counts[effective(r)]++);
+  $("nOk").textContent=counts.ok;$("nBad").textContent=counts.bad;$("nWarn").textContent=counts.warn;
+  if(counts.bad===0&&counts.warn===0){
+    $("overall").className="notice";
+    $("overall").innerHTML="<strong>Triagem automática sem pendências.</strong> Recomenda-se a conferência final antes do prosseguimento.";
+  }else if(counts.bad>0){
+    $("overall").className="notice error";
+    $("overall").innerHTML=`<strong>Foram identificadas ${counts.bad} pendência(s).</strong> Há também ${counts.warn} item(ns) para revisão manual.`;
+  }else{
+    $("overall").className="notice";
+    $("overall").innerHTML=`<strong>Não há pendências objetivas, mas existem ${counts.warn} item(ns) para revisão manual.</strong>`;
+  }
+
+  // CONTROLE INTERNO — redução de prazo de pagamento
+  const alertBox=$("internalPaymentAlert");
+  if(paymentInfo && paymentInfo.corridos<28){
+    const p=paymentInfo;
+    const desc=p.kind==="avista"?"pagamento à vista/antecipado":p.kind==="uteis"?`${p.days} dias úteis (aprox. ${p.corridos} corridos)`:`${p.days} dias corridos`;
+    const payRes=results.find(r=>r.id==="payment");
+    const note=payRes&&payRes.manual==="ok"?`<br><br><em>Item marcado manualmente como "Atende": a solicitação de adequação do prazo foi retirada da mensagem à empresa.</em>`:"";
+    alertBox.className="internal-alert" + (p.corridos<7 ? " critical" : "");
+    if(p.corridos<7){
+      alertBox.innerHTML=`<span class="internal-tag">CONTROLE INTERNO — NÃO ENVIAR À EMPRESA</span>
+      <strong>Prazo de pagamento inferior a 7 dias: ${desc}.</strong>
+      A Portaria GR nº 8.249/2023 estabelece prazo mínimo geral de 28 dias corridos e admite redução para até 7 dias corridos, mediante justificativa, nas contratações diretas por dispensa em razão do valor, com fundamento no art. 75, II, da Lei nº 14.133/2021.
+      <br><br><strong>Atenção:</strong> prazo inferior a 7 dias não se enquadra nessa exceção.${note}`;
+    }else{
+      alertBox.innerHTML=`<span class="internal-tag">CONTROLE INTERNO — NÃO ENVIAR À EMPRESA</span>
+      <strong>REDUÇÃO DE PRAZO DE PAGAMENTO: ${desc}.</strong>
+      Como o prazo é inferior a 28 dias corridos, verificar internamente se a contratação se enquadra em dispensa de licitação em razão do valor, com fundamento no art. 75, II, da Lei nº 14.133/2021, e providenciar a devida justificativa para a redução do prazo de pagamento.
+      <br><br>Portaria GR nº 8.249/2023, art. 1º e parágrafo único.${note}`;
+    }
+  }else{
+    alertBox.className="internal-alert hidden";
+    alertBox.innerHTML="";
+  }
+
+  buildMessage();
+}
+
+function buildMessage(){
+  const quote=$("quoteNo").value.trim()||"XXXX";
+  const pend=results.filter(r=>effective(r)==="bad");
+  const rev=results.filter(r=>effective(r)==="warn");
+  const payPend=pend.some(r=>r.id==="payment");
+  const paymentBelow28=payPend && paymentInfo && paymentInfo.corridos<28;
+  const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+  const signature=`Serviço Técnico de Licitações e Materiais
+Escola de Engenharia de Lorena
+Universidade de São Paulo
+(12) 3159-5047/5363/5156/5364/5058/5332/5372/5365`;
+
+  let msg="";
+  if(!pend.length){
+    msg=`Prezados,
+
+Em conferência à cotação nº ${quote}, não foram identificadas pendências documentais objetivas pela triagem realizada.`;
+    if(rev.length) msg+=`
+
+Permanecem, contudo, os seguintes pontos para conferência:
+${rev.map(r=>"- "+r.title).join("\n")}`;
+    msg+=`
+
+Atenciosamente,
+
+${signature}`;
+  }else{
+    msg=`Prezados,
+
+Ao conferirmos a cotação nº ${quote}, identificamos a necessidade de ajuste/complementação das seguintes informações:
+`;
+    const lines=pend.filter(r=>r.id!=="payment").map(r=>`- ${cap(r.issue)}.`);
+    if(payPend && !paymentBelow28) lines.push(`- ${cap(results.find(r=>r.id==="payment").issue)}.`);
+    if(lines.length) msg+="\n"+lines.join("\n");
+
+    if(paymentBelow28){
+      const p=paymentInfo;
+      const desc=p.kind==="avista"?"pagamento à vista/antecipado":p.kind==="uteis"?`prazo de pagamento de ${p.days} dias úteis`:`prazo de pagamento de ${p.days} dias corridos`;
+      msg+=`${lines.length?"\n\n":"\n"}Percebemos que a cotação apresenta ${desc}, inferior a 28 dias corridos.
+
+A PORTARIA GR Nº 8249, DE 12 DE DEZEMBRO DE 2023, estabelece em seu Artigo 1º que, nas contratações de fornecimento de bens, prestação de serviços e execução de obras em que a Universidade figure como contratante, o prazo de pagamento não deve ser inferior a 28 (vinte e oito) dias corridos.
+
+O parágrafo único do mesmo artigo prevê que esse prazo poderá ser reduzido para até 7 (sete) dias corridos, mediante justificativa, nas contratações diretas resultantes de dispensa de licitação em razão do valor, com fundamento no artigo 75, inciso II, da Lei nº 14.133/2021.
+
+Dessa forma, solicitamos a gentileza de verificar a possibilidade de adequação do prazo de pagamento informado na proposta.`;
+    }
+
+    msg+=`
+
+Solicitamos, por gentileza, o envio da cotação revisada contendo as informações acima, para que possamos dar prosseguimento ao processo de compra.
+
+Atenciosamente,
+
+${signature}`;
+  }
+  $("message").value=msg;
+}
+
+function setProgress(v,msg){
+  $("progress").style.display="block";$("progress").querySelector("span").style.width=Math.max(0,Math.min(100,v))+"%";
+  $("status").textContent=msg||"";
+}
+const ANALYSIS_FIELDS=["quoteNo","totalValue","proposalDate","deliveryDays","paymentDays","validityDays","validUntil"];
+function resetAnalysisState(){
+  ANALYSIS_FIELDS.forEach(id=>$(id).value="");
+  results=[];manualOverrides={};validUntilManual=false;paymentInfo=null;
+  renderTotalHint(null);
+  $("internalPaymentAlert").className="internal-alert hidden";$("internalPaymentAlert").innerHTML="";
+}
+async function processFile(){
+  if(!currentFile)return;
+  try{
+    $("analyze").disabled=true;
+    resetAnalysisState(); // um novo arquivo não herda dados do anterior
+    setProgress(2,"Iniciando leitura...");
+    const text=await extractPdf(currentFile,setProgress);
+    $("rawText").value=text;
+    $("rawCard").classList.remove("hidden");
+    analyzeText();
+  }catch(e){
+    console.error(e);
+    $("status").textContent="Não foi possível ler este PDF. Tente outro arquivo ou cole o texto da cotação na área abaixo e clique em \"Reanalisar texto\".";
+    $("rawCard").classList.remove("hidden");
+  }finally{
+    $("analyze").disabled=false;$("reanalyze").disabled=false;
+    setTimeout(()=>$("progress").style.display="none",700);
+  }
+}
+function selectCompanyFile(f){
+  currentFile=f||null;
+  $("analyze").disabled=!currentFile;
+  $("status").textContent=currentFile?`Arquivo selecionado: ${currentFile.name}. Clique em "Analisar cotação" para continuar.`:"";
+}
+$("file").addEventListener("change",e=>selectCompanyFile(e.target.files[0]));
+$("analyze").onclick=async()=>{
+  if(!currentFile){ $("status").textContent="Selecione um arquivo PDF antes de continuar."; return; }
+  await processFile();
+};
+$("reanalyze").onclick=()=>analyzeText();
+$("copyMessage").onclick=async()=>{await navigator.clipboard.writeText($("message").value);$("copyMessage").textContent="Copiado!";setTimeout(()=>$("copyMessage").textContent="Copiar mensagem",1200)};
+$("clear").onclick=()=>{
+  currentFile=null;$("file").value="";$("rawText").value="";
+  resetAnalysisState();
+  ["summaryCard","checksCard","messageCard","rawCard"].forEach(id=>$(id).classList.add("hidden"));
+  $("analyze").disabled=true;$("reanalyze").disabled=true;$("status").textContent="";
+  $("progress").style.display="none";
+};
+$("validUntil").addEventListener("input",()=>{validUntilManual=!!$("validUntil").value});
+["quoteNo","totalValue","ufesp","proposalDate","deliveryDays","paymentDays","validityDays","validUntil"]
+  .forEach(id=>$(id).addEventListener("change",()=>{if(results.length)analyzeText(true)}));
+$("rawText").addEventListener("input",()=>{$("reanalyze").disabled=!$("rawText").value.trim()});
+const drop=$("drop");
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("drag")}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("drag")}));
+drop.addEventListener("drop",e=>{
+  const f=[...e.dataTransfer.files].find(x=>x.type==="application/pdf"||x.name.toLowerCase().endsWith(".pdf"));
+  if(f) selectCompanyFile(f);
+});
+
+function showSourceScreen(){
+  $("sourceScreen").classList.remove("hidden");
+  $("companyFlow").classList.add("hidden");
+  $("internetFlow").classList.add("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showCompanyFlow(){
+  $("sourceScreen").classList.add("hidden");
+  $("companyFlow").classList.remove("hidden");
+  $("internetFlow").classList.add("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showInternetFlow(){
+  $("sourceScreen").classList.add("hidden");
+  $("companyFlow").classList.add("hidden");
+  $("internetFlow").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("chooseCompany").onclick=showCompanyFlow;
+$("chooseInternet").onclick=showInternetFlow;
+$("backFromCompany").onclick=showSourceScreen;
+$("backFromInternet").onclick=showSourceScreen;
+
+/* ===================== Fluxo: pesquisa na internet ===================== */
+function webCheckLine(ok,title,detail){
+  return `<div class="check"><div class="checkhead"><h3>${esc(title)}</h3><span class="badge ${ok?"ok":"bad"}">${ok?"ATENDE":"PENDÊNCIA"}</span></div><div class="small" style="margin-top:7px">${esc(detail)}</div></div>`;
+}
+
+let currentWebFile=null;
+
+function setWebProgress(v,msg){
+  $("webProgress").style.display="block";
+  $("webProgress").querySelector("span").style.width=Math.max(0,Math.min(100,v))+"%";
+  $("webStatus").textContent=msg||"";
+}
+function updateCnpjHint(){
+  const c=$("webCnpj").value.trim();
+  $("webCnpjHint").innerHTML=!c?"":validCnpj(c)
+    ?`<span class="badge ok">CNPJ válido</span>`
+    :`<span class="badge bad">CNPJ com dígito verificador inválido</span> confira a leitura no PDF.`;
+}
+$("webCnpj").addEventListener("input",updateCnpjHint);
+
+$("webMarketplace").addEventListener("change",()=>{
+  $("marketSellerBox").classList.toggle("hidden",$("webMarketplace").value!=="yes");
+});
+
+function selectWebFile(f){
+  currentWebFile=f||null;
+  $("webReadPdf").disabled=!currentWebFile;
+  $("webStatus").textContent=currentWebFile?`Arquivo selecionado: ${currentWebFile.name}. Clique em "Ler e conferir PDF".`:"";
+}
+$("webFile").addEventListener("change",e=>selectWebFile(e.target.files[0]));
+
+const webDrop=$("webDrop");
+["dragenter","dragover"].forEach(ev=>webDrop.addEventListener(ev,e=>{e.preventDefault();webDrop.classList.add("drag")}));
+["dragleave","drop"].forEach(ev=>webDrop.addEventListener(ev,e=>{e.preventDefault();webDrop.classList.remove("drag")}));
+webDrop.addEventListener("drop",e=>{
+  const f=[...e.dataTransfer.files].find(x=>x.type==="application/pdf"||x.name.toLowerCase().endsWith(".pdf"));
+  if(f) selectWebFile(f);
+});
+
+$("webReadPdf").onclick=async()=>{
+  if(!currentWebFile){$("webStatus").textContent="Selecione um PDF antes de continuar.";return;}
+  try{
+    $("webReadPdf").disabled=true;
+    setWebProgress(5,"Lendo PDF da pesquisa...");
+    const text=await extractPdf(currentWebFile,setWebProgress);
+    $("webRawText").value=text;
+    const d=detectWebData(text);
+    ["webSupplier","webCnpj","webSite","webUrl","webDate","webTime","webPrice","webQty","webSpec","webAvailabilityEvidence","webActualSeller"].forEach(id=>$(id).value="");
+    if(d.supplier)$("webSupplier").value=d.supplier;
+    if(d.cnpj)$("webCnpj").value=d.cnpj;
+    if(d.site)$("webSite").value=d.site;
+    if(d.url)$("webUrl").value=d.url;
+    if(d.date)$("webDate").value=d.date;
+    if(d.time)$("webTime").value=d.time;
+    if(d.price)$("webPrice").value=d.price;
+    $("webQty").value=d.qty||"1";
+    if(d.spec)$("webSpec").value=d.spec;
+    if(d.availability)$("webAvailabilityEvidence").value=d.availability;
+    if(d.seller){
+      $("webActualSeller").value=d.seller;
+      $("webSellerHint").innerHTML=`<span class="badge warn">Indício de vendedor terceiro</span> A página traz “Vendido por: ${esc(d.seller)}”. Confira se é marketplace.`;
+    }else $("webSellerHint").innerHTML="";
+    updateCnpjHint();
+    $("webDetectedCard").classList.remove("hidden");
+    $("webConfirmCard").classList.remove("hidden");
+    $("webRawCard").classList.remove("hidden");
+    $("webStatus").textContent="Leitura concluída. Confira os dados identificados e responda às confirmações.";
+    $("webDetectedCard").scrollIntoView({behavior:"smooth",block:"start"});
+  }catch(e){
+    console.error(e);
+    $("webStatus").textContent="Não foi possível ler este PDF. Verifique o arquivo e tente novamente.";
+  }finally{
+    $("webReadPdf").disabled=false;
+    setTimeout(()=>$("webProgress").style.display="none",700);
+  }
+};
+
+$("webAnalyze").onclick=()=>{
+  const supplier=$("webSupplier").value.trim();
+  const cnpj=$("webCnpj").value.trim();
+  const url=$("webUrl").value.trim();
+  const date=$("webDate").value;
+  const time=$("webTime").value;
+  const spec=$("webSpec").value.trim();
+  const price=moneyToNumber($("webPrice").value);
+  const qty=Number($("webQty").value);
+  const market=$("webMarketplace").value;
+  const actual=$("webActualSeller").value.trim();
+  const cnpjOk=!!cnpj && validCnpj(cnpj);
+
+  const checks=[
+    [!!supplier,"Identificação do fornecedor","O PDF deve permitir identificar o fornecedor/vendedor."],
+    [cnpjOk,"Identificação empresarial / CNPJ",!cnpj?"CNPJ não informado. O CNPJ ajuda a demonstrar a identificação do potencial licitante.":cnpjOk?`CNPJ ${cnpj} com dígito verificador válido.`:`CNPJ ${cnpj} com dígito verificador inválido — confira a leitura no PDF.`],
+    [!!url,"Endereço eletrônico","O PDF deve registrar o endereço eletrônico da página consultada."],
+    [!!date && !!time,"Data e hora do acesso","A página deve demonstrar a data e a hora em que a consulta foi realizada."],
+    [!!spec,"Especificação do item","O PDF deve permitir identificar o item efetivamente pesquisado."],
+    [Number.isFinite(price)&&price>0 && Number.isFinite(qty)&&qty>0,"Preço e quantidade","O PDF deve demonstrar preço e quantidade."],
+    [$("webLegal").checked,"Fornecedor legalmente estabelecido","Confirmação do comprador obrigatória."],
+    [$("webAvailable").checked,"Item disponível para venda","Confirmação do comprador obrigatória."],
+    [$("webCompatible").checked,"Compatibilidade da especificação","O item pesquisado deve corresponder ao objeto solicitado."],
+    [$("webNotAuction").checked,"Não proveniente de sítio de leilão","Pesquisa em sítio de leilão não é admitida."],
+    [$("webPageSaved").checked,"PDF disponibilizado nos autos","O arquivo conferido deve ser o documento juntado ao processo."]
+  ];
+  if(!market) checks.push([false,"Marketplace / intermediação","Informe se a oferta é direta ou proveniente de vendedor terceiro."]);
+  if(market==="yes") checks.push([!!actual,"Vendedor efetivo identificado","Em marketplace, registre quem efetivamente vende o produto."]);
+
+  const bad=checks.filter(x=>!x[0]).length;
+  let intro=`<div class="notice ${bad?"error":""}"><strong>${bad?`Pesquisa com ${bad} pendência(s).`:"Pesquisa apta na conferência realizada."}</strong> `;
+  intro+=bad?"Revise os pontos abaixo antes de utilizar a cotação.":"Os requisitos documentais e as confirmações do comprador foram atendidos.";
+  intro+="</div>";
+
+  let sellerNotice="";
+  if(market==="yes"){
+    sellerNotice=`<div class="internal-alert"><span class="internal-tag">MARKETPLACE</span><strong>Plataforma: ${esc($("webSite").value||"não informada")} | Vendedor efetivo: ${esc(actual||"não informado")}</strong>
+    A conferência deve considerar o vendedor efetivo indicado na página.</div>`;
+  }
+  $("webResult").innerHTML=intro+sellerNotice+checks.map(x=>webCheckLine(x[0],x[1],x[2])).join("");
+  $("webResultCard").classList.remove("hidden");
+  $("webResultCard").scrollIntoView({behavior:"smooth",block:"start"});
+};
+
+$("webClear").onclick=()=>{
+  currentWebFile=null;
+  $("webFile").value="";
+  ["webSupplier","webCnpj","webSite","webUrl","webDate","webTime","webPrice","webQty","webSpec","webAvailabilityEvidence","webActualSeller","webRawText"].forEach(id=>$(id).value="");
+  ["webLegal","webAvailable","webCompatible","webNotAuction","webPageSaved"].forEach(id=>$(id).checked=false);
+  $("webMarketplace").value="";
+  $("marketSellerBox").classList.add("hidden");
+  $("webCnpjHint").innerHTML="";$("webSellerHint").innerHTML="";
+  ["webDetectedCard","webConfirmCard","webRawCard","webResultCard"].forEach(id=>$(id).classList.add("hidden"));
+  $("webReadPdf").disabled=true;
+  $("webStatus").textContent="";
+  $("webProgress").style.display="none";
+};
+</script>
+</body>
+</html>
